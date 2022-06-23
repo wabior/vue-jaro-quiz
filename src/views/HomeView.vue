@@ -1,10 +1,22 @@
-<template>
-  <div class="home">
-    <h1>Wins Quiz</h1>
-    <button @click="startQuiz">START</button>
-       <h3 v-if="quizStarted">{{ questions[questionNo] }}</h3>
-       <h3 v-else>Rozpocznij quiz</h3>
+<template xmlns="http://www.w3.org/1999/html">
+  <div class="home container bg-black py-5">
+
+    <h1 class="mb-5">Wins Quiz</h1>
+    <button v-if="!quizStarted" @click="startQuiz" class="btn btn-light mb-5">Rozpocznij quiz</button>
+<!--       <h3 v-if="quizStarted">{{ questions[questionNo] }}</h3>-->
+    <div v-if="quizStarted">
+<!--    <div>-->
+       <h3 class="pb-3">{{ questions[questionNo]['question'] }}</h3>
+        <div class="row mx-auto justify-content-md-center pb-5 gx-5">
+          <div class="col-md-5 p-4"><button class="btn btn-outline-dark py-3 w-100 text-light">{{ questions[questionNo]['answer_a'] }}</button></div>
+          <div class="col-md-5 p-4"><button class="btn btn-outline-dark py-3 w-100 text-light">{{ questions[questionNo]['answer_b'] }}</button></div>
+          <div class="col-md-5 p-4"><button class="btn btn-outline-dark py-3 w-100 text-light">{{ questions[questionNo]['answer_c'] }}</button></div>
+          <div class="col-md-5 p-4"><button class="btn btn-outline-dark py-3 w-100 text-light">{{ questions[questionNo]['answer_d'] }}</button></div>
+        </div>
+      <button v-if="quizStarted" @click="startQuiz" class="btn btn-outline-dark mb-5">DALEJ</button>
+    </div>
   </div>
+
 </template>
 
 <script>

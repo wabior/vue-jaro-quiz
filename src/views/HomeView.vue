@@ -7,7 +7,11 @@
             <h3 class="pb-3">{{ questions[questionNo]['question'] }}</h3>
             <div class="row mx-auto justify-content-md-center pb-5 gx-5">
                 <div v-for="answerOption in answersArray" class="col-md-5 p-4">
-                    <button @click="setAnswer(answerOption)" class="btn btn-outline-dark py-3 w-100 text-light">{{ questions[questionNo][`answer_${answerOption}`] }}</button>
+                    <button @click="setAnswer(answerOption, $event)"
+                            class="btn btn-outline-dark py-3 w-100 text-light"
+                            ref="answerOptions">
+                        {{ questions[questionNo][`answer_${answerOption}`] }}
+                    </button>
                 </div>
             </div>
             <button v-if="quizStarted && userAnswer" @click="checkAnswer(); startQuiz()" class="btn btn-outline-dark mb-5">DALEJ</button>
@@ -17,7 +21,7 @@
 </template>
 
 <script>
-import {ref, watchEffect} from "vue";
+import {onMounted, ref, watchEffect} from "vue";
 
 const API_URL = 'http://127.0.0.1:8000/api/question/';
 // const API_URL = 'http://quiz/api/question/';
@@ -30,6 +34,7 @@ export default {
             quizStarted = ref(false),
             answersArray = ref(['a', 'b', 'c', 'd']),
             userAnswer = ref(null),
+            answerOptions = ref([]),
             userAnswers = [];
 
         watchEffect(async () => {
@@ -46,7 +51,8 @@ export default {
             if (questionNo.value < questionsCount - 1 && userAnswers.length == questionNo.value) {
                 questionNo.value++;
                 userAnswer.value = null
-            } else if (userAnswers.length < questionNo.value){
+                clearAnswer()
+            } else if (userAnswers.length < questionNo.value) {
                 console.log('zaznacz odpowiedź')
             } else {
                 console.info('last question');
@@ -57,21 +63,29 @@ export default {
             console.log('answer:', userAnswer.value);
             if (userAnswer.value) {
                 userAnswers.push(userAnswer.value);
+                console.log('Answers: ', userAnswers)
             } else {
                 console.log('brak odp')
             }
-            console.log('answers:', userAnswers);
         }
 
-        const setAnswer = answer => {
+        const clearAnswer = () => {
+            answerOptions.value.forEach(answerOption => {
+                answerOption.classList.remove('bg-primary')
+            })
+        }
+
+        const setAnswer = (answer, event) => {
             userAnswer.value = answer;
 
-            console.log('set:', userAnswer.value)
+            clearAnswer()
+
+            event.target.classList.toggle('bg-primary')
 
             return answer;
         };
 
-        return {answersArray, questions, questionNo, userAnswer,  checkAnswer, quizStarted, startQuiz, setAnswer}
+        return {answersArray, questions, questionNo, userAnswer, checkAnswer, quizStarted, startQuiz, setAnswer, answerOptions}
     }
 }
 </script>

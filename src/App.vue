@@ -1,6 +1,18 @@
 <template>
-  <router-view/>
+    <div class="home container bg-black py-5">
+        <h1 class="mb-5">Wins Quiz</h1>
+        <Quiz />
+    </div>
 </template>
+
+<script>
+    import Quiz from "@/components/Quiz";
+
+    export default {
+        name: 'App',
+        components: { Quiz }
+    }
+</script>/
 
 <style>
 #app {

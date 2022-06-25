@@ -1,7 +1,5 @@
-<template xmlns="http://www.w3.org/1999/html">
-    <div class="home container bg-black py-5">
+<template>
 
-        <h1 class="mb-5">Wins Quiz</h1>
         <button v-if="!quizStarted" @click="startQuiz" class="btn btn-light mb-5">Rozpocznij quiz</button>
         <div v-if="quizStarted">
             <h3 class="pb-3">{{ questions[questionNo]['question'] }}</h3>
@@ -16,12 +14,11 @@
             </div>
             <button v-if="quizStarted && userAnswer" @click="checkAnswer(); startQuiz()" class="btn btn-outline-dark mb-5">DALEJ</button>
         </div>
-    </div>
 
 </template>
 
 <script>
-import {onMounted, ref, watchEffect} from "vue";
+import {ref, watchEffect} from "vue";
 
 const API_URL = 'http://127.0.0.1:8000/api/question/';
 // const API_URL = 'http://quiz/api/question/';

@@ -1,7 +1,8 @@
 <template>
     <div class="home container bg-black py-5">
         <h1 class="mb-5">Wins Quiz</h1>
-        <Quiz :questions="questions"/>
+        <Quiz :questions="questions" @quizFinished="resultsPage" v-if="!quizFinished"/>
+        <h2 v-if="quizFinished">KONIEC</h2>
     </div>
 </template>
 
@@ -16,16 +17,22 @@
         name: 'App',
         components: { Quiz },
         setup() {
+            let quizFinished = ref(false);
 
             if (!API_URL) {
                 console.error('no .env api url');
+            }
+
+            const resultsPage = () => {
+                quizFinished.value = true;
+                console.log('finished')
             }
 
             const { questions, load } = getQuestions(API_URL)
 
             watchEffect(load)
 
-            return { questions }
+            return { questions, resultsPage, quizFinished }
         }
     }
 </script>

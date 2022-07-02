@@ -23,7 +23,9 @@ import { ref } from "vue";
 export default {
     name: 'HomeView',
     props: ['questions'],
-    setup(props) {
+    emits: ['quizFinished'],
+
+    setup(props, {emit}) {
         const questionNo = ref(0),
             quizStarted = ref(false),
             answersArray = ref(['a', 'b', 'c', 'd']),
@@ -47,6 +49,8 @@ export default {
                 console.log('zaznacz odpowiedź')
             } else {
                 console.info('last question');
+
+                emit('quizFinished')
             }
         }
 
@@ -80,3 +84,6 @@ export default {
     }
 }
 </script>
+<!--<script setup>-->
+<!--    defineEmits('quizFinished')-->
+<!--</script>-->

@@ -9,13 +9,19 @@
     import { ref, watchEffect } from "vue";
     import Quiz from "@/components/Quiz";
     import getQuestions from "@/composables/GetQuestions";
-    const API_URL = {'apache': 'http://quiz/api/question', 'laravel': 'http://127.0.0.1:8000/api/question/'};
+
+    const API_URL = (process.env.VUE_APP_API_URL ?? null);
 
     export default {
         name: 'App',
         components: { Quiz },
         setup() {
-            const { questions, load } = getQuestions(API_URL.apache)
+
+            if (!API_URL) {
+                console.error('no .env api url');
+            }
+
+            const { questions, load } = getQuestions(API_URL)
 
             watchEffect(load)
 

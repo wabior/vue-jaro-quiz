@@ -4,8 +4,8 @@
     <div v-if="quizStarted">
         <h3 class="pb-3">{{ questions[questionNo]['question'] }}</h3>
         <div class="row mx-auto justify-content-md-center pb-5 gx-5">
-            <div v-for="answerOption in answersArray" class="col-md-5 p-4">
-                <button @click="setAnswer(answerOption, $event)"
+            <div v-for="(answerOption, idx) in answersArray" class="col-md-5 p-4">
+                <button @click="setAnswer(idx.toString(), $event)"
                         class="btn btn-outline-dark py-3 w-100 text-light"
                         ref="answerOptions">
                     {{ questions[questionNo][`answer_${answerOption}`] }}
@@ -13,6 +13,8 @@
             </div>
         </div>
         <button v-if="quizStarted && userAnswer" @click="checkAnswer(); startQuiz()" class="btn btn-outline-dark mb-5">DALEJ</button>
+        <h3 v-if="correctAnswer">poprawna odp</h3>
+        <h3 v-else-if="correctAnswer === false">Zła odp</h3>
     </div>
 
 </template>
@@ -22,11 +24,11 @@ import { ref } from "vue";
 
 export default {
     name: 'HomeView',
-    props: ['questions'],
-    emits: ['quizFinished'],
+    props: ['questions', 'correctAnswer'],
+    emits: ['quizFinished', 'answered'],
 
     setup(props, {emit}) {
-        const questionNo = ref(0),
+        const questionNo = ref(-1),
             quizStarted = ref(false),
             answersArray = ref(['a', 'b', 'c', 'd']),
             userAnswer = ref(null),
@@ -39,9 +41,8 @@ export default {
                 quizStarted.value = true
             }
 
-            console.log(questionNo.value, props.questions.length)
-
-            if (questionNo.value < props.questions.length - 1 && userAnswers.length === questionNo.value) {
+            if (questionNo.value + 1 < props.questions.length - 1 && userAnswers.length === questionNo.value + 1 ) {
+                if (userAnswers.length) emit('answered', questionNo.value + 1, userAnswer.value);
                 questionNo.value++;
                 userAnswer.value = null
                 clearAnswer()
@@ -76,14 +77,9 @@ export default {
             clearAnswer()
 
             event.target.classList.toggle('bg-primary')
-
-            return answer;
         };
 
         return {answersArray, questionNo, userAnswer, checkAnswer, quizStarted, startQuiz, setAnswer, answerOptions}
     }
 }
 </script>
-<!--<script setup>-->
-<!--    defineEmits('quizFinished')-->
-<!--</script>-->

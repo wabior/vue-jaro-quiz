@@ -1,7 +1,12 @@
 <template>
     <div class="home container bg-black py-5">
         <h1 class="mb-5">Wins Quiz</h1>
-        <Quiz :questions="questions" @quizFinished="resultsPage" v-if="!quizFinished"/>
+        <Quiz :questions="questions"
+              :correctAnswer="answeredCorrectly"
+              @quizFinished="resultsPage"
+              @answered="answered"
+              v-if="!quizFinished
+        "/>
         <h2 v-if="quizFinished">KONIEC</h2>
     </div>
 </template>
@@ -9,7 +14,8 @@
 <script>
     import { ref, watchEffect } from "vue";
     import Quiz from "@/components/Quiz";
-    import getQuestions from "@/composables/GetQuestions";
+    import CheckAnswer from "@/composables/CheckAnswer";
+    import GetQuestions from "@/composables/GetQuestions";
 
     const API_URL = (process.env.VUE_APP_API_URL ?? null);
 
@@ -18,6 +24,7 @@
         components: { Quiz },
         setup() {
             let quizFinished = ref(false);
+            let answeredCorrectly = ref(null);
 
             if (!API_URL) {
                 console.error('no .env api url');
@@ -28,11 +35,21 @@
                 console.log('finished')
             }
 
-            const { questions, load } = getQuestions(API_URL)
+            const answered = async (questionNo, answer) => {
+
+                const { correctAnswer, check } = CheckAnswer(API_URL, questionNo, answer);
+                await check();
+
+                answeredCorrectly.value = correctAnswer.value
+            };
+
+
+
+            const { questions, load } = GetQuestions(API_URL)
 
             watchEffect(load)
 
-            return { questions, resultsPage, quizFinished }
+            return { questions, resultsPage, quizFinished, answered, answeredCorrectly }
         }
     }
 </script>

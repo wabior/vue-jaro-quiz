@@ -1,8 +1,8 @@
 <template>
 
-    <button v-if="!quizStarted && questions.length" @click="startQuiz" class="btn btn-light mb-5">Rozpocznij quiz</button>
-    <div v-if="quizStarted">
-        <h3 class="pb-3">{{ questions[questionNo]['question'] }}</h3>
+    <button v-if="!quizStarted && questions.length" @click="startQuiz" class="btn btn-light btn-lg w-50 mt-4">Rozpocznij quiz</button>
+    <div v-if="quizStarted" class="questions">
+        <h3 class="py-3">{{ questions[questionNo]['question'] }}</h3>
         <div class="row mx-auto justify-content-md-center pb-5 gx-5">
             <div v-for="(answerOption, idx) in answersArray" class="col-md-5 p-4">
                 <button @click="setAnswer(idx.toString(), $event)"
@@ -11,10 +11,10 @@
                     {{ questions[questionNo][`answer_${answerOption}`] }}
                 </button>
             </div>
+            <div class="col-md-5 ps-4 btn-container">
+                <button v-if="quizStarted && userAnswer" @click="checkAnswer(); startQuiz()" class="btn btn-outline-dark m-0">DALEJ</button>
+            </div>
         </div>
-        <button v-if="quizStarted && userAnswer" @click="checkAnswer(); startQuiz()" class="btn btn-outline-dark mb-5">DALEJ</button>
-        <h3 v-if="correctAnswer">poprawna odp</h3>
-        <h3 v-else-if="correctAnswer === false">Zła odp</h3>
     </div>
 
 </template>

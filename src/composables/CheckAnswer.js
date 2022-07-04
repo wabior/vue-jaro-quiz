@@ -11,8 +11,7 @@ const CheckAnswer = (url, questionNo, answer) => {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
                 }
             });
 

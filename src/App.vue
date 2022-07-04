@@ -1,13 +1,18 @@
 <template>
-    <div class="home container bg-black py-5">
-        <h1 class="mb-5">Wins Quiz</h1>
+    <h1 class="pt-5 pb-4">Wins Quiz</h1>
+
+    <div class="home container">
+
         <Quiz :questions="questions"
               :correctAnswer="answeredCorrectly"
               @quizFinished="resultsPage"
               @answered="answered"
               v-if="!quizFinished
         "/>
-        <h2 v-if="quizFinished">KONIEC</h2>
+        <div v-if="quizFinished" class="d-flex flex-column">
+            <p>Dziękujemy za udział w Quizie</p>
+            <h2>Twój wynik to <b>{{ score }}</b> / {{ questions.length}} </h2>
+        </div>
     </div>
 </template>
 
@@ -23,8 +28,9 @@
         name: 'App',
         components: { Quiz },
         setup() {
-            let quizFinished = ref(false);
-            let answeredCorrectly = ref(null);
+            const quizFinished = ref(false);
+            const answeredCorrectly = ref(null);
+            let score = ref(0);
 
             if (!API_URL) {
                 console.error('no .env api url');
@@ -32,7 +38,6 @@
 
             const resultsPage = () => {
                 quizFinished.value = true;
-                console.log('finished')
             }
 
             const answered = async (questionNo, answer) => {
@@ -41,6 +46,10 @@
                 await check();
 
                 answeredCorrectly.value = correctAnswer.value
+
+                if (answeredCorrectly.value) {
+                    score.value++;
+                }
             };
 
 
@@ -49,7 +58,7 @@
 
             watchEffect(load)
 
-            return { questions, resultsPage, quizFinished, answered, answeredCorrectly }
+            return { questions, resultsPage, quizFinished, answered, answeredCorrectly, score }
         }
     }
 </script>
@@ -61,8 +70,17 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #9eb3de;
-  background-color: #1c1a1a;
+  background-color: #121111;
   height: 100vh;
+}
+.home {
+    align-items: center;
+    background-color : #121111;
+    display: flex;
+    flex-direction: column;
+}
+.btn-container {
+    height: 50px;
 }
 .question:hover {
   background-color: rgba(28, 26, 26, 0.95);

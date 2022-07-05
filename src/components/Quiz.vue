@@ -2,7 +2,8 @@
 
     <button v-if="!quizStarted && questions.length" @click="startQuiz" class="btn btn-light btn-lg w-50 mt-4">Rozpocznij quiz</button>
     <div v-if="quizStarted" class="questions">
-        <h3 class="py-3">{{ questions[questionNo]['question'] }}</h3>
+        <p>Pytanie {{ questionNo + 1 }} / {{ questions.length }} </p>
+        <p class="py-3 h3">{{ questions[questionNo]['question'] }}</p>
         <div class="row mx-auto justify-content-md-center pb-5 gx-5">
             <div v-for="(answerOption, idx) in answersArray" class="col-md-5 p-4">
                 <button @click="setAnswer(idx.toString(), $event)"
@@ -41,17 +42,17 @@ export default {
                 quizStarted.value = true
             }
 
-            if (questionNo.value + 1 < props.questions.length - 1 && userAnswers.length === questionNo.value + 1 ) {
+            if (questionNo.value + 1 < props.questions.length && userAnswers.length === questionNo.value + 1 ) {
                 if (userAnswers.length) emit('answered', questionNo.value + 1, userAnswer.value);
                 questionNo.value++;
                 userAnswer.value = null
                 clearAnswer()
             } else if (userAnswers.length < questionNo.value) {
                 console.log('zaznacz odpowiedź')
-            } else {
+            } else if (userAnswers.length ===  props.questions.length ){
                 console.info('last question');
-
-                emit('quizFinished')
+                emit('answered', questionNo.value + 1, userAnswer.value);
+                emit('quizFinished');
             }
         }
 
